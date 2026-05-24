@@ -1,6 +1,6 @@
 // sw.js - Service Worker para Robles Nails Home Studio
 
-const CACHE_NAME = 'roblesnailshomestudio-v25';
+const CACHE_NAME = 'roblesnailshomestudio-v29';
 const urlsToCache = [
   '/roblesnailshomestudio/',
   '/roblesnailshomestudio/index.html',

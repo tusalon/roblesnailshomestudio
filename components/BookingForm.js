@@ -5,6 +5,7 @@
 
 function BookingForm({ service, profesional, date, time, onSubmit, onCancel, cliente }) {
     const [submitting, setSubmitting] = React.useState(false);
+    const submittingRef = React.useRef(false);
     const [error, setError] = React.useState(null);
 
     // ============================================
@@ -258,6 +259,9 @@ END:VCALENDAR`;
     // ============================================
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (submittingRef.current) return;
+
+        submittingRef.current = true;
         setSubmitting(true);
         setError(null);
 
@@ -266,8 +270,6 @@ END:VCALENDAR`;
                 const configNegocio = await window.cargarConfiguracionNegocio();
                 const configGlobal = window.salonConfig ? await window.salonConfig.get() : {};
                 const minAntelacionHoras = configGlobal?.min_antelacion_horas ?? 2;
-                const duracionTurno = Number(configGlobal?.duracion_turnos || 60);
-                const intervaloTurnos = Number(configGlobal?.intervalo_entre_turnos || 0);
                 const requiereAnticipo = configNegocio?.requiere_anticipo === true;
 
                 const [year, month, day] = date.split('-').map(Number);
@@ -297,8 +299,7 @@ END:VCALENDAR`;
                         : {};
                     const inicioMin = timeToMinutes(cursor);
                     const finMin = inicioMin + (parseInt(servicioItem.duracion, 10) || 60);
-                    const indicesDelDia = horariosPorDia[diaSemana] || [];
-                    const dentroHorario = estaDentroBloqueTrabajo(inicioMin, finMin, indicesDelDia, duracionTurno, intervaloTurnos);
+                    const trabajaEseDia = (horariosPorDia[diaSemana] || []).length > 0;
                     const tocaDescanso = slotTieneDescanso(inicioMin, finMin, descansosPorDia[diaSemana] || []);
                     const tieneConflicto = bookings.some(booking => {
                         const bookingStart = timeToMinutes(booking.hora_inicio);
@@ -307,7 +308,7 @@ END:VCALENDAR`;
                     });
                     const horarioPermitido = index > 0 || servicioPermiteHorario(servicioItem, cursor);
 
-                    if (!dentroHorario || tocaDescanso || tieneConflicto || !horarioPermitido) {
+                    if (!trabajaEseDia || tocaDescanso || tieneConflicto || !horarioPermitido) {
                         setError(`El horario de ${servicioItem.nombre} con ${profesionalItem.nombre} ya no está disponible.`);
                         setSubmitting(false);
                         return;
@@ -448,6 +449,7 @@ END:VCALENDAR`;
             console.error('Error:', err);
             setError("Ocurrió un error al guardar la reserva.");
         } finally {
+            submittingRef.current = false;
             setSubmitting(false);
         }
     };
