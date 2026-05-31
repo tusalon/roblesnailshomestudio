@@ -1,6 +1,6 @@
 // sw.js - Service Worker para Robles Nails Home Studio
 
-const CACHE_NAME = 'roblesnailshomestudio-v29';
+const CACHE_NAME = 'roblesnailshomestudio-v47';
 const urlsToCache = [
   '/roblesnailshomestudio/',
   '/roblesnailshomestudio/index.html',
@@ -17,7 +17,14 @@ const urlsToCache = [
   '/roblesnailshomestudio/icons/icon-152x152.png',
   '/roblesnailshomestudio/icons/icon-192x192.png',
   '/roblesnailshomestudio/icons/icon-384x384.png',
-  '/roblesnailshomestudio/icons/icon-512x512.png'
+  '/roblesnailshomestudio/icons/icon-512x512.png',
+  '/roblesnailshomestudio/vendor/react.production.min.js',
+  '/roblesnailshomestudio/vendor/react-dom.production.min.js',
+  '/roblesnailshomestudio/vendor/babel.min.js',
+  '/roblesnailshomestudio/vendor/bcrypt.min.js',
+  '/roblesnailshomestudio/vendor/tailwind-browser.js',
+  '/roblesnailshomestudio/vendor/lucide/lucide.css',
+  '/roblesnailshomestudio/vendor/lucide/lucide.woff2'
 ];
 
 // ============================================
